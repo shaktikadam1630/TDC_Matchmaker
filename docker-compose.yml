@@ -2,9 +2,6 @@ services:
   mongo:
     image: mongo:7
     restart: unless-stopped
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER:-root}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:-change-me-locally}
     volumes:
       - mongo_data:/data/db
     ports:
@@ -24,7 +21,7 @@ services:
     environment:
       NODE_ENV: production
       PORT: 4000
-      MONGO_URI: mongodb://${MONGO_ROOT_USER:-root}:${MONGO_ROOT_PASSWORD:-change-me-locally}@mongo:27017/tdc_matchmaker?authSource=admin
+      MONGO_URI: mongodb://mongo:27017/tdc_matchmaker
       JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in .env}
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8080}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
