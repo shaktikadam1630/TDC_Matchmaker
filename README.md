@@ -114,6 +114,8 @@ Full list: [docs/PROJECT_DETAILS.md](docs/PROJECT_DETAILS.md)
 
 Deployable to AWS (App Runner, plus S3 and CloudFront for the frontend). See [deploy/aws/README.md](deploy/aws/README.md).
 
+Render deployment is configured through [render.yaml](render.yaml). See [deploy/render/README.md](deploy/render/README.md).
+
 ## ⚠️ Known Limitations
 
 - JWT is stored in `localStorage` (an httpOnly cookie is better for production)
