@@ -1,5 +1,69 @@
 # Deploying to AWS
 
+## EC2 Docker deployment
+
+This is the simplest way to run the complete application on an EC2 instance. The root `docker-compose.yml` runs the frontend, backend, and temporary MongoDB together. The frontend is exposed on port 80; MongoDB and the API remain private inside the Docker network.
+
+### EC2 security group
+
+Allow these inbound rules:
+
+| Type | Port | Source |
+|---|---:|---|
+| SSH | 22 | Your IP address only |
+| HTTP | 80 | `0.0.0.0/0` |
+
+Do not open ports 27017 or 4000 to the internet.
+
+### Install Docker on Ubuntu
+
+SSH into the instance, then run:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y docker.io docker-compose-plugin git
+sudo systemctl enable --now docker
+sudo usermod -aG docker "$USER"
+exit
+```
+
+Reconnect over SSH after `exit`, then run:
+
+```bash
+git clone https://github.com/shaktikadam1630/TDC_Matchmaker.git
+cd TDC_Matchmaker
+cp .env.example .env
+nano .env
+```
+
+Set a strong value for `JWT_SECRET`. Leave `OPENAI_API_KEY` empty if you do not need AI; the application uses its rule-based fallback.
+
+Start the application:
+
+```bash
+docker compose up -d --build
+docker compose ps
+```
+
+Open `http://YOUR_EC2_PUBLIC_IP` in your browser. View logs with:
+
+```bash
+docker compose logs -f
+```
+
+Update the deployment later:
+
+```bash
+git pull
+docker compose up -d --build
+```
+
+The MongoDB data is stored in the Docker volume `mongo_data`. Remove it only when you intentionally want to reset all data:
+
+```bash
+docker compose down -v
+```
+
 Recommended low-ops layout:
 
 | Piece | AWS service |
